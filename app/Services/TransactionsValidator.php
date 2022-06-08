@@ -18,8 +18,8 @@ class TransactionsValidator
 
     private function validateTransaction(TransactionDTO $transaction)
     {
-        if (!$transaction->amount) {
-            throw new TransactionValidationException("amount must be informed and be greater than zero.");
+        if (!$transaction->amount || $transaction->amount < 100) {
+            throw new TransactionValidationException("amount must be informed and be greater than 100.");
         }
         if (!$transaction->payment_method) {
             throw new TransactionValidationException("payment_method must be informed.");

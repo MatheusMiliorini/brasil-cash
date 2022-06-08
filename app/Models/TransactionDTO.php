@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class TransactionDTO extends Model
 {
@@ -20,4 +21,23 @@ class TransactionDTO extends Model
         'installments',
         'card',
     ];
+
+    protected $attributes = [
+        'async' => true,
+        'capture' => true,
+        'installments' => 1
+    ];
+
+    public function prepareFieldsForInsert(CardDTO $cardDTO): void
+    {
+        if ($this->capture) {
+            $this->captured_amount = $this->amount;
+            $this->status = 'processing';
+        } else {
+            $this->status = 'authorized';
+        }
+        $this->ref_id = (string) Str::uuid();
+        $this->card_id = $cardDTO->card_id;
+        unset($this->card);
+    }
 }

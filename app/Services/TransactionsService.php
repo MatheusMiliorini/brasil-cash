@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\CardDTO;
 use App\Models\TransactionDTO;
+use App\Repositories\CardRepository;
+use App\Repositories\TransactionRepository;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -11,15 +13,33 @@ use Illuminate\Support\Facades\DB;
  */
 class TransactionsService
 {
+    /** @var TransactionsValidator */
+    private $transactionsValidator;
+    /** @var CardRepository */
+    private $cardRepository;
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
+    public function __construct(
+        TransactionsValidator $transactionsValidator,
+        CardRepository $cardRepository,
+        TransactionRepository $transactionRepository,
+    ) {
+        $this->transactionsValidator = $transactionsValidator;
+        $this->cardRepository = $cardRepository;
+        $this->transactionRepository = $transactionRepository;
+    }
 
     public function save(TransactionDTO $transactionDto)
     {
+        $this->transactionsValidator->validate($transactionDto);
         DB::beginTransaction();
-        $cardDto = new CardDTO($transactionDto->card);
-        $cardDto->save();
-        // $transactionDto['card_id'] = $card->card_id;
-        // $transactionDto->save();
+        $card = $this->cardRepository->save(new CardDTO($transactionDto->card));
+        $transactionDto->prepareFieldsForInsert($card);
+        $transaction = $this->transactionRepository->save($transactionDto);
         DB::commit();
-        return $transactionDto;
+        $transaction->card = $card;
+        
+        return $transaction;
     }
 }

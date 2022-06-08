@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Repositories\CardRepository;
+use App\Repositories\CardRepositoryImpl;
+use App\Repositories\TransactionRepository;
+use App\Repositories\TransactionRepositoryImpl;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(CardRepository::class, CardRepositoryImpl::class);
+        $this->app->bind(TransactionRepository::class, TransactionRepositoryImpl::class);
     }
 
     /**

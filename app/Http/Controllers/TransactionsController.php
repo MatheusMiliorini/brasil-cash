@@ -3,58 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\TransactionValidationException;
+use App\Http\Resources\TransactionResource;
 use App\Models\TransactionDTO;
 use App\Services\TransactionsService;
 use App\Services\TransactionsValidator;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TransactionsController extends Controller
 {
 
     /** @var TransactionsService */
     private $transactionsService;
-    /** @var TransactionsValidator */
-    private $transactionsValidator;
 
     public function __construct(
         TransactionsService $transactionsService,
-        TransactionsValidator $transactionsValidator
     ) {
         $this->transactionsService = $transactionsService;
-        $this->transactionsValidator = $transactionsValidator;
     }
 
     public function save(Request $request)
     {
-        $data = $this->getSaveParamsWithDefaultValues($request->all());
-        $transaction = new TransactionDTO($data);
+        $transaction = new TransactionDTO($request->all());
         try {
-            $this->transactionsValidator->validate($transaction);
+            $createdTransaction = $this->transactionsService->save($transaction);
+            return response()
+                ->json(new TransactionResource($createdTransaction));
         } catch (TransactionValidationException $exception) {
             return response()
                 ->json(['error' => $exception->getMessage()], $exception->getStatusCode());
         } catch (Exception $exception) {
+            Log::error($exception);
             return response()
-                ->json(['error' => "There was an error processing the request."])
-                ->status(500);
+                ->json(['error' => "There was an error processing the request."], 500);
         }
-        $createdTransaction = $this->transactionsService->save($transaction);
-        return response()->json($createdTransaction);
-    }
-
-    private function getSaveParamsWithDefaultValues(array $params): array
-    {
-        $defaults = [
-            'async' => true,
-            'capture' => true,
-            'installments' => 1
-        ];
-        foreach ($defaults as $key => $value) {
-            if (!isset($params[$key])) {
-                $params[$key] = $value;
-            }
-        }
-        return $params;
     }
 }

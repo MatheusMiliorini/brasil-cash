@@ -16,12 +16,12 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->integer('amount');
-            $table->integer('paid_amount');
             $table->string('payment_method');
-            $table->boolean('async');
-            $table->boolean('capture');
-            $table->integer('captured_amount');
-            $table->integer('installments');
+            $table->integer('paid_amount')->default(0);
+            $table->boolean('async')->default(true);
+            $table->boolean('capture')->default(true);
+            $table->integer('captured_amount')->default(0);
+            $table->integer('installments')->default(1);
             $table->string('ref_id');
             $table->string('status');
             $table->integer('card_id');

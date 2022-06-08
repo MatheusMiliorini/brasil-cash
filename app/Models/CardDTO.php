@@ -10,6 +10,8 @@ class CardDTO extends Model
 
     use HasFactory;
 
+    protected $primaryKey = 'card_id';
+
     protected $table = 'cards';
 
     protected $fillable = [

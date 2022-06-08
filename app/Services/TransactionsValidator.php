@@ -9,11 +9,24 @@ use App\Models\TransactionDTO;
 class TransactionsValidator
 {
 
-    public function validate(TransactionDTO $transaction): bool
+    public function validateForSave(TransactionDTO $transaction): bool
     {
         $this->validateTransaction($transaction);
         $this->validateCard(new CardDTO($transaction->card));
         return true;
+    }
+
+    public function validateForCapture(TransactionDTO $transaction, int $amount)
+    {
+        if ($amount < 100) {
+            throw new TransactionValidationException('amount must be greater or equal to 100.');
+        }
+        if ($amount > $transaction->amount) {
+            throw new TransactionValidationException("amount can't be greater than $transaction->amount.");
+        }
+        if ($transaction->status !== TransactionDTO::AUTHORIZED) {
+            throw new TransactionValidationException('Only authorized transactions can be captured.');
+        }
     }
 
     private function validateTransaction(TransactionDTO $transaction)

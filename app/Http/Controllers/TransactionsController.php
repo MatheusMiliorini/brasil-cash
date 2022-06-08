@@ -39,4 +39,20 @@ class TransactionsController extends Controller
                 ->json(['error' => "There was an error processing the request."], 500);
         }
     }
+
+    public function capture(Request $request, TransactionDTO $transaction)
+    {
+        try {
+            $capturedTransaction = $this->transactionsService->capture($transaction, $request->amount ?? 0);
+            return response()
+                ->json(new TransactionResource($capturedTransaction));
+        } catch (TransactionValidationException $exception) {
+            return response()
+                ->json(['error' => $exception->getMessage()], $exception->getStatusCode());
+        } catch (Exception $exception) {
+            Log::error($exception);
+            return response()
+                ->json(['error' => "There was an error processing the request."], 500);
+        }
+    }
 }

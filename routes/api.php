@@ -19,5 +19,5 @@ Route::prefix('/transactions')->group(function () {
 
     Route::post('/', [TransactionsController::class, 'save']);
 
+    Route::post('/{transaction}/capture', [TransactionsController::class, 'capture']);
 });
-

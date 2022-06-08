@@ -17,14 +17,13 @@ class TransactionProcessor
         $transaction = TransactionDTO::find($transactionId);
         $card = $transaction->card;
         $lastCardDigit = substr($card->card_number, -1);
-        $possibleStatus = ['paid', 'refused', 'authorized'];
         if ($lastCardDigit < 5) {
-            $transaction->status = $possibleStatus[0];
+            $transaction->status = TransactionDTO::AUTHORIZED;
             $transaction->paid_amount = $transaction->amount;
         } else if ($lastCardDigit < 9) {
-            $transaction->status = $possibleStatus[1];
+            $transaction->status = TransactionDTO::REFUSED;
         } else {
-            $transaction->status = $possibleStatus[array_rand($possibleStatus)];
+            $transaction->status = TransactionDTO::STATUS[array_rand(TransactionDTO::STATUS)];
         }
         $transaction->save();
         return $transaction;

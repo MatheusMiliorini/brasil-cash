@@ -11,6 +11,11 @@ class TransactionDTO extends Model
 
     use HasFactory;
 
+    const AUTHORIZED = 'authorized';
+    const PAID = 'paid';
+    const REFUSED = 'refused';
+    const STATUS = [self::AUTHORIZED, self::PAID, self::REFUSED];
+
     protected $table = 'transactions';
 
     protected $fillable = [
@@ -41,7 +46,8 @@ class TransactionDTO extends Model
         unset($this->card);
     }
 
-    public function card() {
+    public function card()
+    {
         return $this->hasOne(CardDTO::class, 'card_id');
     }
 }

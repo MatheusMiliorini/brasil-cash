@@ -19,7 +19,7 @@ class TransactionProcessor
         $card = $transaction->card;
         $lastCardDigit = substr($card->card_number, -1);
         if ($lastCardDigit < 5) {
-            $transaction->status = Transaction::AUTHORIZED;
+            $transaction->status = Transaction::PAID;
             $transaction->paid_amount = $transaction->amount;
         } else if ($lastCardDigit < 9) {
             $transaction->status = Transaction::REFUSED;

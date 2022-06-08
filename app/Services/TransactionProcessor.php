@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\ProcessTransaction;
 use App\Models\TransactionDTO;
 
 class TransactionProcessor
@@ -9,7 +10,7 @@ class TransactionProcessor
 
     public function addToQueue(int $transactionId)
     {
-        // TODO
+        ProcessTransaction::dispatch($transactionId);
     }
 
     public function process(int $transactionId): TransactionDTO

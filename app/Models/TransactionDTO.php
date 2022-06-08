@@ -40,4 +40,8 @@ class TransactionDTO extends Model
         $this->card_id = $cardDTO->card_id;
         unset($this->card);
     }
+
+    public function card() {
+        return $this->hasOne(CardDTO::class, 'card_id');
+    }
 }

@@ -12,7 +12,7 @@ class TransactionsValidator
     public function validateForSave(TransactionDTO $transaction): bool
     {
         $this->validateTransaction($transaction);
-        $this->validateCard(new CardDTO($transaction->card));
+        $this->validateCard(new CardDTO($transaction->card ?? []));
         return true;
     }
 

@@ -105,12 +105,4 @@ class TransactionServiceTest extends TestCase
             $this->transactionsService->capture($newTransaction, $transaction->amount + 50);
         }, TransactionValidationException::class);
     }
-
-    private function getTransaction(array $transactionFields = [], array $cardFields = []): Transaction
-    {
-        $transaction = Transaction::factory()->make($transactionFields);
-        $card = Card::factory()->make($cardFields);
-        $transaction->card = $card->toArray();
-        return $transaction;
-    }
 }

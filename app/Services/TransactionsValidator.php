@@ -16,7 +16,7 @@ class TransactionsValidator
         return true;
     }
 
-    public function validateForCapture(Transaction $transaction, int $amount)
+    public function validateForCapture(Transaction $transaction, int $amount): bool
     {
         if ($amount < 100) {
             throw new TransactionValidationException('amount must be greater or equal to 100.');
@@ -27,6 +27,7 @@ class TransactionsValidator
         if ($transaction->status !== Transaction::AUTHORIZED) {
             throw new TransactionValidationException('Only authorized transactions can be captured.');
         }
+        return true;
     }
 
     private function validateTransaction(Transaction $transaction)

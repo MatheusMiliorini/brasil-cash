@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Models\CardDTO;
+use App\Models\Card;
 
 class CardRepositoryImpl implements CardRepository
 {
-    public function save(CardDTO $card): CardDTO
+    public function save(Card $card): Card
     {
         $card->save();
         return $card->refresh();

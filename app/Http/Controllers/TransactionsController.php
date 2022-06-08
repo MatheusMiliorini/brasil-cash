@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\TransactionValidationException;
 use App\Http\Resources\TransactionResource;
-use App\Models\TransactionDTO;
+use App\Models\Transaction;
 use App\Services\TransactionsService;
 use App\Services\TransactionsValidator;
 use Exception;
@@ -25,7 +25,7 @@ class TransactionsController extends Controller
 
     public function save(Request $request)
     {
-        $transaction = new TransactionDTO($request->all());
+        $transaction = new Transaction($request->all());
         try {
             $createdTransaction = $this->transactionsService->save($transaction);
             return response()
@@ -40,7 +40,7 @@ class TransactionsController extends Controller
         }
     }
 
-    public function capture(Request $request, TransactionDTO $transaction)
+    public function capture(Request $request, Transaction $transaction)
     {
         try {
             $capturedTransaction = $this->transactionsService->capture($transaction, $request->amount ?? 0);

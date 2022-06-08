@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Exceptions\TransactionValidationException;
-use App\Models\CardDTO;
-use App\Models\TransactionDTO;
+use App\Models\Card;
+use App\Models\Transaction;
 use App\Repositories\CardRepository;
 use App\Repositories\TransactionRepository;
 use Illuminate\Support\Facades\DB;
@@ -35,11 +35,11 @@ class TransactionsService
         $this->transactionProcessor = $transactionProcessor;
     }
 
-    public function save(TransactionDTO $transactionDto): TransactionDTO
+    public function save(Transaction $transactionDto): Transaction
     {
         $this->transactionsValidator->validateForSave($transactionDto);
         DB::beginTransaction();
-        $card = $this->cardRepository->save(new CardDTO($transactionDto->card));
+        $card = $this->cardRepository->save(new Card($transactionDto->card));
         $transactionDto->prepareFieldsForInsert($card);
         $transaction = $this->transactionRepository->save($transactionDto);
         DB::commit();
@@ -55,12 +55,12 @@ class TransactionsService
         return $transaction;
     }
 
-    public function capture(TransactionDTO $transaction, int $amount): TransactionDTO
+    public function capture(Transaction $transaction, int $amount): Transaction
     {
         $this->transactionsValidator->validateForCapture($transaction, $amount);
         $transaction->captured_amount = $amount;
         $transaction->paid_amount = $amount;
-        $transaction->status = TransactionDTO::PAID;
+        $transaction->status = Transaction::PAID;
         $transaction->save();
         return $transaction;
     }

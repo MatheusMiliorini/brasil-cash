@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Models\TransactionDTO;
+use App\Models\Transaction;
 
 class TransactionRepositoryImpl implements TransactionRepository
 {
-    public function save(TransactionDTO $transactionDTO): TransactionDTO
+    public function save(Transaction $transactionDTO): Transaction
     {
         $transactionDTO->save();
         return $transactionDTO->refresh();

@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\CardDTO;
+use App\Models\Card;
 
 interface CardRepository
 {
-    public function save(CardDTO $card): CardDTO;
+    public function save(Card $card): Card;
 }

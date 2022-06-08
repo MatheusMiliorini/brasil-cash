@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\ProcessTransaction;
-use App\Models\TransactionDTO;
+use App\Models\Transaction;
 
 class TransactionProcessor
 {
@@ -13,18 +13,18 @@ class TransactionProcessor
         ProcessTransaction::dispatch($transactionId);
     }
 
-    public function process(int $transactionId): TransactionDTO
+    public function process(int $transactionId): Transaction
     {
-        $transaction = TransactionDTO::find($transactionId);
+        $transaction = Transaction::find($transactionId);
         $card = $transaction->card;
         $lastCardDigit = substr($card->card_number, -1);
         if ($lastCardDigit < 5) {
-            $transaction->status = TransactionDTO::AUTHORIZED;
+            $transaction->status = Transaction::AUTHORIZED;
             $transaction->paid_amount = $transaction->amount;
         } else if ($lastCardDigit < 9) {
-            $transaction->status = TransactionDTO::REFUSED;
+            $transaction->status = Transaction::REFUSED;
         } else {
-            $transaction->status = TransactionDTO::STATUS[array_rand(TransactionDTO::STATUS)];
+            $transaction->status = Transaction::STATUS[array_rand(Transaction::STATUS)];
         }
         $transaction->save();
         return $transaction;

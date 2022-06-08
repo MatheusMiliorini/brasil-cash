@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class TransactionDTO extends Model
+class Transaction extends Model
 {
 
     use HasFactory;
@@ -33,7 +33,7 @@ class TransactionDTO extends Model
         'installments' => 1
     ];
 
-    public function prepareFieldsForInsert(CardDTO $cardDTO): void
+    public function prepareFieldsForInsert(Card $cardDTO): void
     {
         if ($this->capture) {
             $this->captured_amount = $this->amount;
@@ -48,6 +48,6 @@ class TransactionDTO extends Model
 
     public function card()
     {
-        return $this->hasOne(CardDTO::class, 'card_id');
+        return $this->hasOne(Card::class, 'card_id');
     }
 }

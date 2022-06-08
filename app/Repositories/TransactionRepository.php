@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\TransactionDTO;
+use App\Models\Transaction;
 
 interface TransactionRepository
 {
-    public function save(TransactionDTO $transactionDTO): TransactionDTO;
+    public function save(Transaction $transactionDTO): Transaction;
 }

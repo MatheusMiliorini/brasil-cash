@@ -3,20 +3,20 @@
 namespace App\Services;
 
 use App\Exceptions\TransactionValidationException;
-use App\Models\CardDTO;
-use App\Models\TransactionDTO;
+use App\Models\Card;
+use App\Models\Transaction;
 
 class TransactionsValidator
 {
 
-    public function validateForSave(TransactionDTO $transaction): bool
+    public function validateForSave(Transaction $transaction): bool
     {
         $this->validateTransaction($transaction);
-        $this->validateCard(new CardDTO($transaction->card ?? []));
+        $this->validateCard(new Card($transaction->card ?? []));
         return true;
     }
 
-    public function validateForCapture(TransactionDTO $transaction, int $amount)
+    public function validateForCapture(Transaction $transaction, int $amount)
     {
         if ($amount < 100) {
             throw new TransactionValidationException('amount must be greater or equal to 100.');
@@ -24,12 +24,12 @@ class TransactionsValidator
         if ($amount > $transaction->amount) {
             throw new TransactionValidationException("amount can't be greater than $transaction->amount.");
         }
-        if ($transaction->status !== TransactionDTO::AUTHORIZED) {
+        if ($transaction->status !== Transaction::AUTHORIZED) {
             throw new TransactionValidationException('Only authorized transactions can be captured.');
         }
     }
 
-    private function validateTransaction(TransactionDTO $transaction)
+    private function validateTransaction(Transaction $transaction)
     {
         if (!$transaction->amount || $transaction->amount < 100) {
             throw new TransactionValidationException("amount must be informed and be greater than 100.");
@@ -45,7 +45,7 @@ class TransactionsValidator
         }
     }
 
-    private function validateCard(CardDTO $card)
+    private function validateCard(Card $card)
     {
         $fieldsForValidation = [
             'card_number',
